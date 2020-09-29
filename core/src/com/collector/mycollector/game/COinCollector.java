@@ -1,9 +1,8 @@
-package com.mygame.coincollector.game;
+package com.collector.mycollector.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -21,27 +20,27 @@ public class COinCollector extends ApplicationAdapter {
 	int manstate =0, pause=0 ;
 	float gravity = 0.2f ;
 	float velocity=0;
-	int manY = 0;
+	int mY = 0;
 
-	ArrayList<Integer> coinX = new ArrayList<>();
-	ArrayList<Integer> coinY = new ArrayList<>();
-	Texture coin;
+	ArrayList<Integer> X = new ArrayList<>();
+	ArrayList<Integer> Y = new ArrayList<>();
+	Texture prize;
 	Random random;
-	int coincount;
+	int prizecount;
 
-    ArrayList<Integer> bombX = new ArrayList<>();
-    ArrayList<Integer> bombY = new ArrayList<>();
+    ArrayList<Integer> bX = new ArrayList<>();
+    ArrayList<Integer> bY = new ArrayList<>();
     Texture bomb;
-    int bombcount;
+    int bC;
 
-    ArrayList<Rectangle> coinRect = new ArrayList<>();
-	ArrayList<Rectangle> bombRect = new ArrayList<>();
+    ArrayList<Rectangle> prizeRect = new ArrayList<>();
+	ArrayList<Rectangle> Rect = new ArrayList<>();
 
 	Rectangle manRect;
 	int score=0;
 	BitmapFont font;
 
-	int gamestate=0;
+	int mainState =0;
     Texture dizzy;
 	@Override
 	public void create () {
@@ -52,10 +51,10 @@ public class COinCollector extends ApplicationAdapter {
 		man[1]= new Texture("frame-2.png");
 		man[2]= new Texture("frame-3.png");
 		man[3]= new Texture("frame-4.png");
-        coin =  new Texture("coin.png");
+        prize =  new Texture("coin.png");
         bomb =  new Texture("bomb.png");
         dizzy = new Texture("dizzy-1.png");
-		  manY=Gdx.graphics.getHeight() / 2;
+		  mY =Gdx.graphics.getHeight() / 2;
 		  random = new Random();
 		  font = new BitmapFont();
 		  font.setColor(Color.WHITE);
@@ -66,18 +65,18 @@ public class COinCollector extends ApplicationAdapter {
 	public void makeCoin()
 	{
 		float height = random.nextFloat() * Gdx.graphics.getHeight();
-		coinY.add((int)height);
+		Y.add((int)height);
 
-		coinX.add(Gdx.graphics.getWidth());
+		X.add(Gdx.graphics.getWidth());
 
 	}
 
     public void makeBomb()
     {
         float height = random.nextFloat() * (Gdx.graphics.getHeight()-bomb.getHeight());//change made
-        bombY.add((int)height);
+        bY.add((int)height);
 
-        bombX.add(Gdx.graphics.getWidth());
+        bX.add(Gdx.graphics.getWidth());
 
     }
 
@@ -89,46 +88,46 @@ public class COinCollector extends ApplicationAdapter {
 		batch.draw(background,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 
 
-		 if(gamestate==1)//Game is running
+		 if(mainState ==1)//Game is running
 		 {
 
-			 if( bombcount<250)
+			 if( bC <250)
 			 {
-				 bombcount++;
+				 bC++;
 			 }
 			 else
 			 {
-				 bombcount=0;
+				 bC =0;
 				 makeBomb();
 			 }
-			 bombRect.clear(); //change made
-			 for( int i=0; i<bombX.size();i++)
+			 Rect.clear(); //change made
+			 for(int i = 0; i< bX.size(); i++)
 			 {
-				 batch.draw(bomb,bombX.get(i),bombY.get(i));
-				 bombX.set(i,bombX.get(i)-8);
-				 bombRect.add(new Rectangle(bombX.get(i),bombY.get(i),bomb.getWidth(),bomb.getHeight()));
+				 batch.draw(bomb, bX.get(i), bY.get(i));
+				 bX.set(i, bX.get(i)-8);
+				 Rect.add(new Rectangle(bX.get(i), bY.get(i),bomb.getWidth(),bomb.getHeight()));
 			 }
 
 
 
 
 
-			 if( coincount<150)
+			 if( prizecount <150)
 			 {
-				 coincount++;
+				 prizecount++;
 			 }
 			 else
 			 {
-				 coincount=0;
+				 prizecount =0;
 				 makeCoin();
 			 }
 
-			 coinRect.clear();
-			 for( int i=0; i<coinX.size();i++)
+			 prizeRect.clear();
+			 for(int i = 0; i< X.size(); i++)
 			 {
-				 batch.draw(coin,coinX.get(i),coinY.get(i));
-				 coinX.set(i,coinX.get(i)-4);
-				 coinRect.add(new Rectangle(coinX.get(i),coinY.get(i),coin.getWidth(),coin.getHeight()));
+				 batch.draw(prize, X.get(i), Y.get(i));
+				 X.set(i, X.get(i)-4);
+				 prizeRect.add(new Rectangle(X.get(i), Y.get(i), prize.getWidth(), prize.getHeight()));
 			 }
 
 
@@ -152,78 +151,78 @@ public class COinCollector extends ApplicationAdapter {
 
 			 }
 
-			 if(manY <=0)
+			 if(mY <=0)
 			 {
-				 manY =0;
+				 mY =0;
 			 }
 			 int g= Gdx.graphics.getHeight() - man[manstate].getHeight()/2;
-			 if(manY >=g)
+			 if(mY >=g)
 			 {
-				 manY = Gdx.graphics.getHeight()- man[manstate].getHeight()/2;
+				 mY = Gdx.graphics.getHeight()- man[manstate].getHeight()/2;
 			 }
 
 
 			 velocity +=gravity;//velocity = velocity + gravity
-			 manY -= velocity;//manY = manY- velocity
+			 mY -= velocity;//manY = manY- velocity
 
 		 }
-		 else if(gamestate==0)//about to start
+		 else if(mainState ==0)//about to start
 		 {
 			 if( Gdx.input.justTouched()) {
-				 gamestate = 1;
+				 mainState = 1;
 			 }
 
 		 }
-		 else if(gamestate==2)//over
+		 else if(mainState ==2)//over
 		 {
 			 if( Gdx.input.justTouched()) {
-				 gamestate = 1;
-				 manY= Gdx.graphics.getHeight()/2;
+				 mainState = 1;
+				 mY = Gdx.graphics.getHeight()/2;
 				 score=0;
 				 velocity=0;
-				 coinX.clear();
-				 coinY.clear();
-				 coinRect.clear();
-				 coincount=0;
+				 X.clear();
+				 Y.clear();
+				 prizeRect.clear();
+				 prizecount =0;
 
-				 bombX.clear();
-				 bombY.clear();
-				 bombRect.clear();
-				 bombcount=0;
+				 bX.clear();
+				 bY.clear();
+				 Rect.clear();
+				 bC =0;
 			 }
 		 }
 
 
 
 
-       if(gamestate==2)
+       if(mainState ==2)
 	   {
-	   	batch.draw(dizzy,Gdx.graphics.getWidth() / 2 - man[manstate].getWidth() / 2,  manY);
+	   	batch.draw(dizzy,Gdx.graphics.getWidth() / 2 - man[manstate].getWidth() / 2, mY);
 	   }else {
-		   batch.draw(man[manstate], Gdx.graphics.getWidth() / 2 - man[manstate].getWidth() / 2, manY);
+		   batch.draw(man[manstate], Gdx.graphics.getWidth() / 2 - man[manstate].getWidth() / 2, mY);
 	   }
 
 
 
-		manRect = new Rectangle(Gdx.graphics.getWidth() / 2 - man[manstate].getWidth() / 2,manY,man[manstate].getWidth(),man[manstate].getHeight());
+		manRect = new Rectangle(Gdx.graphics.getWidth() / 2 - man[manstate].getWidth() / 2, mY,man[manstate].getWidth(),man[manstate].getHeight());
 
-		for(int i=0;i<coinRect.size();i++)
+		for(int i = 0; i< prizeRect.size(); i++)
 		{
-			if(Intersector.overlaps(manRect,coinRect.get(i)))
+			if(Intersector.overlaps(manRect, prizeRect.get(i)))
 			{
 				score++;
-				coinRect.remove(i);
-				coinX.remove(i);
-				coinY.remove(i);
+				prizeRect.remove(i);
+				X.remove(i);
+				Y.remove(i);
 				break;
 			}
 		}
 
-		for(int i=0;i<bombRect.size();i++)
+		for(int i = 0; i< Rect.size(); i++)
 		{
-			if(Intersector.overlaps(manRect,bombRect.get(i)))
+			if(Intersector.overlaps(manRect, Rect.get(i)))
 			{
-				gamestate=2;
+				mainState =2;
 			}
 		}
 
